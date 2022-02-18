@@ -18,7 +18,7 @@ import part1.exceptions.SkiersApiInitializationException;
 public class Main {
 
   // --numThreads 32 --numSkiers 20000 --numLifts 40 --numRuns 20 --ip localhost --port 8080
-  // --numThreads 32 --numSkiers 500 --numLifts 40 --numRuns 20 --ip 34.222.11.253 --port 8080
+  // --numThreads 32 --numSkiers 20000 --numLifts 40 --numRuns 20 --ip 34.222.11.253 --port 8080
   public static void main(String[] args) {
     Record record = new Record();
     try {
