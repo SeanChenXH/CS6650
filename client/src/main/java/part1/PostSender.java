@@ -1,18 +1,18 @@
 package part1;
 
-import io.swagger.client.ApiException;
-import io.swagger.client.api.SkiersApi;
-import io.swagger.client.model.LiftRide;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import org.apache.commons.httpclient.HttpStatus;
-import part2.Record;
+import part1.api.ISkiersApi;
 
+/**
+ * The PostSender is to send a skiers api post request to upload new lift ride to server.
+ */
 public class PostSender implements Runnable {
 
   private Random random = new Random();
   private Parameters parameters;
-  private SkiersApi skiersApi;
+  private ISkiersApi skiersApi;
   private CountDownLatch countDownLatch;
   private CountDownLatch complete;
   private int numPost;
@@ -22,9 +22,22 @@ public class PostSender implements Runnable {
   private int endTime;
   private Counter counter;
 
-  public PostSender(Parameters parameters, SkiersApi skiersApi,
-      CountDownLatch countDownLatch, CountDownLatch complete, int numPost, int startSkierId,
-      int endSkierId, int startTime,
+  /**
+   * Instantiates a PostSender
+   *
+   * @param parameters     the parameters
+   * @param skiersApi      the skiers api
+   * @param countDownLatch the countdown latch
+   * @param complete       the complete
+   * @param numPost        the num post
+   * @param startSkierId   the start skier id
+   * @param endSkierId     the end skier id
+   * @param startTime      the start time
+   * @param endTime        the end time
+   * @param counter        the counter
+   */
+  public PostSender(Parameters parameters, ISkiersApi skiersApi, CountDownLatch countDownLatch,
+      CountDownLatch complete, int numPost, int startSkierId, int endSkierId, int startTime,
       int endTime, Counter counter) {
     this.parameters = parameters;
     this.skiersApi = skiersApi;
@@ -65,19 +78,6 @@ public class PostSender implements Runnable {
     int time = this.startTime + this.random.nextInt(this.endTime - this.startTime + 1);
     int waitTime = Config.WAIT_TIME_START + this.random.nextInt(
         Config.WAIT_TIME_END - Config.WAIT_TIME_START + 1);
-
-    LiftRide body = new LiftRide();
-    body.setLiftID(liftID);
-    body.setTime(time);
-    body.setWaitTime(waitTime);
-
-    try {
-      int statusCode = this.skiersApi.writeNewLiftRideWithHttpInfo(body, 1, "2019",
-          "100", skierID).getStatusCode();
-      return statusCode;
-    } catch (ApiException e) {
-      e.printStackTrace();
-    }
-    return -1;
+    return this.skiersApi.writeNewLiftRide(liftID, time, waitTime, 1, "2019", "100", skierID);
   }
 }

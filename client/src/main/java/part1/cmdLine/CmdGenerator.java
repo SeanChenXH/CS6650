@@ -3,15 +3,24 @@ package part1.cmdLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+/**
+ * The CmdGenerator is to generate system command-line options,some of which are required and some
+ * of which are optional.
+ */
 public class CmdGenerator {
 
   private Options options;
 
+  /**
+   * Instantiates a new CmdGenerator.
+   */
   public CmdGenerator() {
 
   }
 
-
+  /**
+   * Generate options.
+   */
   public void generate() {
 
     this.options = new Options();

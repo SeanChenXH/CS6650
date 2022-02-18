@@ -1,8 +1,17 @@
 package part1;
 
-import io.swagger.client.api.SkiersApi;
 import java.util.concurrent.CountDownLatch;
+import part1.api.ISkiersApi;
 
+/**
+ * The PhaseLauncher class is execute 3 phases, each of which will send a large number of lift ride
+ * requests to the server APIs. Phase 1 will launch numTreads / 4 threads. Phase 1 CountDownLatch is
+ * used to monitor the completion of Phase1 threads. Once 20% of the threads in Phase 1 have been
+ * completed, Phase 2 begins. Phase 2 will launch numTreads threads to send requests. As same as
+ * before, Phase 2 CountDownLatch is used to monitor the completion of Phase 2 threads. Once 20 % of
+ * the threads in Phase 2 have been completed, Phase 3 begins. Complete CountDownLatch is designed
+ * as a global CountDownLath which is to monitor the completion of the whole 3 phases.
+ */
 public class PhaseLauncher {
 
   private Parameters parameters;
@@ -15,10 +24,15 @@ public class PhaseLauncher {
   private CountDownLatch phase2CountDownLatch;
   private CountDownLatch complete;
 
-  private SkiersApi skiersApi;
+  private ISkiersApi skiersApi;
 
   private Counter counter;
 
+  /**
+   * Instantiates a new PhaseLauncher.
+   *
+   * @param config the config
+   */
   public PhaseLauncher(Config config) {
 
     this.parameters = config.getParameters();
@@ -36,6 +50,9 @@ public class PhaseLauncher {
     this.counter = config.getCounter();
   }
 
+  /**
+   * Launch all.
+   */
   public void launchAll() {
 
     new Thread(() -> {
@@ -51,6 +68,9 @@ public class PhaseLauncher {
     }, "phase3").start();
   }
 
+  /**
+   * Launch phase 1.
+   */
   public void launchPhase1() {
 
     for (int i = 0; i < this.phase1ThreadNum; i++) {
@@ -67,6 +87,9 @@ public class PhaseLauncher {
     }
   }
 
+  /**
+   * Launch phase 2.
+   */
   public void launchPhase2() {
     try {
       this.phase1CountDownLatch.await();
@@ -87,6 +110,9 @@ public class PhaseLauncher {
     }
   }
 
+  /**
+   * Launch phase 3.
+   */
   public void launchPhase3() {
     try {
       this.phase1CountDownLatch.await();
@@ -105,6 +131,9 @@ public class PhaseLauncher {
     }
   }
 
+  /**
+   * Wait complete.
+   */
   public void waitComplete() {
     try {
       this.complete.await();

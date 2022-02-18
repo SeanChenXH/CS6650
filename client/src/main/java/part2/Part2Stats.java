@@ -3,11 +3,20 @@ package part2;
 import java.util.Collections;
 import part1.Counter;
 
+/**
+ * The Part2Stats is to calculate the data from part2 and print out the statistics.
+ */
 public class Part2Stats {
 
   private Record record;
   private Counter counter;
 
+  /**
+   * Instantiates a new Part 2 stats.
+   *
+   * @param record  the record
+   * @param counter the counter
+   */
   public Part2Stats(Record record, Counter counter) {
     this.record = record;
     this.counter = counter;
@@ -15,6 +24,9 @@ public class Part2Stats {
   }
 
 
+  /**
+   * Print stats.
+   */
   public void printStats() {
     System.out.println("Mean response time: " + calculateMeanResponseTime() + " milliseconds");
     System.out.println("Median response time: " + calculateMedianResponseTime() + " milliseconds");

@@ -1,13 +1,15 @@
 package part1;
 
 import io.swagger.client.api.SkiersApi;
+import part1.api.SwaggerSkiersApi;
 import part1.cmdLine.CmdGenerator;
-import part1.cmdLine.CmdParser;
-import part1.exceptions.CounterInitializationException;
-import part1.exceptions.ParametersInitializationException;
+import part1.cmdLine.CmdIParser;
 import part1.exceptions.ParserInitializationException;
 import part1.exceptions.SkiersApiInitializationException;
 
+/**
+ * The Main class is the entry point to run client part 1 by specifying the Parser and SkiersApi
+ */
 public class Main {
 
   // --numThreads 32 --numSkiers 20000 --numLifts 40 --numRuns 20 --ip localhost --port 8080
@@ -16,13 +18,11 @@ public class Main {
     Config config = null;
     try {
       config = new Config()
-          .setParser(new CmdParser(new CmdGenerator()))
-          .setSkiersApi(new SkiersApi())
-          .setCounter(new Counter())
-          .setParameters(new Parameters())
+          .setParser(new CmdIParser(new CmdGenerator()))
+          .setSkiersApi(new SwaggerSkiersApi(new SkiersApi()))
           .init(args);
-      new Part1(args, config).run();
-    } catch (ParserInitializationException | ParametersInitializationException | SkiersApiInitializationException | CounterInitializationException e) {
+      new Part1(config).run();
+    } catch (ParserInitializationException | SkiersApiInitializationException e) {
       e.printStackTrace();
     }
   }

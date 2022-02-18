@@ -1,7 +1,17 @@
 package part1;
 
+/**
+ * The Part1Stats is to calculate the data and print out the statistics.
+ */
 public class Part1Stats {
 
+  /**
+   * Calculate the data and print statistics.
+   *
+   * @param config    the config
+   * @param startTime the start time
+   * @param endTime   the end time
+   */
   public void printStats(Config config, long startTime, long endTime) {
     System.out.println("Thread: " + config.getParameters().getNumThreads());
     System.out.println("-----------------------------------------------------");

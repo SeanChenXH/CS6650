@@ -6,7 +6,14 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 import part1.Parameters;
 
-public class CmdParser implements Parser {
+/**
+ * The CmdParser class that implements IParser interface is to parse the external command line
+ * parameters of numTreads, numSkiers, numLifts, numRuns and ip/port as Parameter Object. It also
+ * acts as a validator to check the correctness of the input command line arguments. For example,
+ * the maximum number of threads should not exceed 1024, and the IPv4 address should be referred to
+ * as dotted-decimal format or "localhost".
+ */
+public class CmdIParser implements IParser {
 
   private final static String NUM_THREADS = "numThreads";
   private final static String NUM_SKIERS = "numSkiers";
@@ -14,6 +21,7 @@ public class CmdParser implements Parser {
   private final static String NUM_RUNS = "numRuns";
   private final static String IP = "ip";
   private final static String PORT = "port";
+  private final static String LOCALHOST = "localhost";
 
   private final static int MIN_NUM_THREADS = 1;
   private final static int MAX_NUM_THREADS = 1024;
@@ -31,8 +39,12 @@ public class CmdParser implements Parser {
   private CmdGenerator cmdGenerator;
   private HelpFormatter formatter;
 
-
-  public CmdParser(CmdGenerator cmdGenerator) {
+  /**
+   * Instantiates a new CmdParser.
+   *
+   * @param cmdGenerator the cmdGenerator
+   */
+  public CmdIParser(CmdGenerator cmdGenerator) {
     this.cmdGenerator = cmdGenerator;
     this.formatter = new HelpFormatter();
   }
@@ -49,29 +61,42 @@ public class CmdParser implements Parser {
           parseNumRuns(parameters, cmd) &&
           parseIp(parameters, cmd) &&
           parsePort(parameters, cmd)) {
-        System.out.println("Complete reading parameters from command line...");
+        handleParsingSuccess();
       } else {
-        this.formatter.printHelp(" ", " ", cmdGenerator.getOptions(), "", false);
-        System.exit(SYSTEM_EXIT_NUM);
+        handleParsingError();
       }
     } catch (ParseException e) {
-      this.formatter.printHelp(" ", " ", cmdGenerator.getOptions(), "", false);
-      System.exit(SYSTEM_EXIT_NUM);
+      handleParsingError();
     }
     return parameters;
   }
 
-//    public Parameters parse(Parameters parameters, String[] args) {
-//    parameters.setIp("localhost");
-//    parameters.setIp("34.222.11.253");
-//    parameters.setPort("8080");
-//    parameters.setNumThreads(256);
-//    parameters.setNumSkiers(20000);
-//    parameters.setNumLifts(40);
-//    parameters.setNumRuns(20);
-//    return parameters;
-//  }
+  /**
+   * Gets cmd generator.
+   *
+   * @return the cmd generator
+   */
+  public CmdGenerator getCmdGenerator() {
+    return cmdGenerator;
+  }
 
+  /**
+   * Sets cmd generator.
+   *
+   * @param cmdGenerator the cmd generator
+   */
+  public void setCmdGenerator(CmdGenerator cmdGenerator) {
+    this.cmdGenerator = cmdGenerator;
+  }
+
+  private void handleParsingSuccess() {
+    System.out.println("Complete reading parameters from command line...");
+  }
+
+  private void handleParsingError() {
+    this.formatter.printHelp(" ", " ", cmdGenerator.getOptions(), "", false);
+    System.exit(SYSTEM_EXIT_NUM);
+  }
 
   private boolean parseNumThreads(Parameters parameters, CommandLine cmd)
       throws NumberFormatException {
@@ -122,13 +147,34 @@ public class CmdParser implements Parser {
   }
 
   private boolean parseIp(Parameters parameters, CommandLine cmd) {
-    parameters.setIp(cmd.getOptionValue(IP));
-    return true;
+    String ipAddress = cmd.getOptionValue(IP);
+    if (ipAddress == null) {
+      return false;
+    }
+    if (ipAddress.equals(LOCALHOST)) {
+      parameters.setIp(ipAddress);
+      return true;
+    }
+    String unit = "(\\d{1,2}|(0|1)\\" + "d{2}|2[0-4]\\d|25[0-5])";
+    String regex = unit + "\\." + unit + "\\." + unit + "\\." + unit;
+    if (ipAddress.matches(regex)) {
+      parameters.setIp(cmd.getOptionValue(IP));
+      return true;
+    }
+    return false;
   }
 
   private boolean parsePort(Parameters parameters, CommandLine cmd) {
-    parameters.setPort(cmd.getOptionValue(PORT));
-    return true;
+    String portNum = cmd.getOptionValue(PORT);
+    if (portNum == null) {
+      return false;
+    }
+    String regex = "[0-9]+";
+    if (portNum.matches(regex)) {
+      parameters.setPort(cmd.getOptionValue(PORT));
+      return true;
+    }
+    return false;
   }
 
 }
