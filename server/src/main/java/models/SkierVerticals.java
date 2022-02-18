@@ -2,7 +2,6 @@ package models;
 
 import java.util.List;
 
-//todo
 public class SkierVerticals {
 
   private List<SkierVertical> verticals;
