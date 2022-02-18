@@ -17,13 +17,22 @@ public class CsvWriter {
    * @param record     the record
    */
   public void writeCsvRecord(Parameters parameters, Record record) {
+    CSVWriter csvWriter = null;
     try {
-      CSVWriter csvWriter = null;
       csvWriter = new CSVWriter(
           new FileWriter("stats/csv_threads_" + parameters.getNumThreads() + ".csv"));
       csvWriter.writeAll(record.getRecordList());
+      csvWriter.flush();
     } catch (IOException e) {
       e.printStackTrace();
+    } finally {
+      if (csvWriter != null) {
+        try {
+          csvWriter.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 

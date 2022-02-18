@@ -41,8 +41,8 @@ public class PhaseLauncher {
     this.phase2ThreadNum = this.parameters.getNumThreads();
     this.phase3ThreadNum = this.parameters.getNumThreads() / 10;
 
-    this.phase1CountDownLatch = new CountDownLatch(this.phase1ThreadNum / 5);
-    this.phase2CountDownLatch = new CountDownLatch(this.phase2ThreadNum / 5);
+    this.phase1CountDownLatch = new CountDownLatch((int) Math.ceil(this.phase1ThreadNum / 5));
+    this.phase2CountDownLatch = new CountDownLatch((int) Math.ceil(this.phase2ThreadNum / 5));
     this.complete = new CountDownLatch(
         this.phase1ThreadNum + this.phase2ThreadNum + this.phase3ThreadNum);
 
