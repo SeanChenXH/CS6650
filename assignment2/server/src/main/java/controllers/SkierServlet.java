@@ -24,8 +24,8 @@ public class SkierServlet extends HttpServlet {
 
   private static final String INVALID_URL_MSG = "invalid url";
   private SkierService skierService;
-  private static final int DEFAULT_MAX_IDLE = 20;
   private static final int DEFAULT_MIN_IDLE = 5;
+  private static final int DEFAULT_MAX_IDLE = 20;
   private GenericObjectPool<Channel> channelFactory;
 
   @Override
